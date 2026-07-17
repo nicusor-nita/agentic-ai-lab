@@ -1,9 +1,9 @@
-### 04-11
+### MCP server
 
-# Streaming ReAct with thinking.
+This is a simple implementation of a spring AI MCP server.
 
-Implementing an assistant that can Reason and Act (reAct) and showing thinking, all using streaming.
+You can create a separate worktree
 
-# Prerequisites
-- ollama installed and running
-- qwen3:8b model pulled locally
+git worktree add ../mcp-server mcp-server
+
+Then open it(mcp-server) separately in your IDE and run the server.
