@@ -1,22 +1,29 @@
-### 05-08
+### 05-09
 
-# Langfuse tool description management
-Using langfuse prompts management capabilities to manage and version tool descriptions
+# Langfuse tracing with OpenTelemetry
+This example shows how to capture LLM call traces using OpenTelemetry and ship them to Langfuse for observability.
 
 # Prerequisites
 - Ollama installed and running
 - qwen2.5 model pulled locally
-- langchain installed and configured
+- langfuse installed and configured (see 05-07)
+- observability stack running
 
-# SETUP
-You should have an instance of langfuse running;
-You should have created a project in langfuse to manage your prompts, and create a prompt for the assistant.
-Then you should generate the sk and pk keys and run
-echo -n "pk-lf-xxxxxxxx:sk-lf-xxxxxxxx" | base64
-The value should be used in as langfuse.authorizationHeader in application.yml
 
-Finally you should have tool descriptions in langfuse:
-tools/getExchangeRate
-and
-tools/getWeather
+The manual instrumentation in this test (ObservableChatModel, TracingToolExecutor)
+sends traces via the orange path only: App → OTel Collector → Langfuse — no OTel
+Java agent required. See docs/observability-stack.html for the full diagram.
 
+If you want to see the full stack in action, attach the OTel Java agent to the
+process when running the test, for auto-instrumentation.
+
+-javaagent:/Users/nicusor.nita/.m2/repository/io/opentelemetry/javaagent/opentelemetry-javaagent/2.27.0/opentelemetry-javaagent-2.27.0.jar
+-Dotel.exporter.otlp.endpoint=http://localhost:4318
+-Dotel.service.name=ai-series  
+-Dotel.metrics.exporter=otlp
+-Dotel.instrumentation.runtime-metrics.enabled=true
+-Dotel.instrumentation.jvm-metrics.enabled=true
+-Dotel.metrics.jvm.enabled=true
+
+Note: adjust the -javaagent path to your local Maven repo location, and the
+otlp.endpoint if your OTel Collector isn't running on localhost:4318.
